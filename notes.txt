@@ -1,0 +1,8 @@
+# Form
+
+1. Thread
+2  Reply
+3. Users
+
+A. Thread is created by a user
+B. A Reply belongs to a threa, abd belongs to a user

@@ -1,0 +1,106 @@
+<?php
+
+namespace Tests\Feature;
+
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+
+class ReadThreadsTest extends TestCase
+{
+    use DatabaseMigrations;
+    //public $thread;
+    public function setUp()
+    {
+        parent::setUp();
+        $this->thread = factory('Forum\Thread')->create();
+    }
+    /** @test **/
+    public function a_thread_can_make_a_string_path()
+    {
+        //$thread = make('Forum\Thread');
+        $this->assertEquals('/threads/'.$this->thread->channel->slug.'/'.$this->thread->id, $this->thread->path());
+    }
+
+    /** @test */
+    public function a_user_can_browse_threads()
+    {
+        //$thread = factory('App\Thread')->create();
+        $response = $this->get('/threads');
+
+        //$response->assertStatus(200);
+        $response->assertSee($this->thread->title);
+    }
+    /** @test */
+    public function a_user_can_view_single_thread()
+    {
+        //$thread = factory('App\Thread')->create();
+        $response = $this->get($this->thread->path());
+        $response->assertSee($this->thread->title);
+    }
+    /** @test */
+    public function a_user_can_read_replies_associated_with_a_thread()
+    {
+        //Get the replies for the thread.
+        $reply = factory('Forum\Reply')->create(['thread_id'=>$this->thread->id]);
+        //when visited
+        $this->get($this->thread->path())
+            ->assertSee($reply->body);
+    }
+    /** @test **/
+    public function a_thread_has_user()
+    {
+        //Get the thread.
+        $this->assertInstanceOf('Forum\User', $this->thread->owner);
+    }
+    /** @test **/
+    public function a_thread_belongs_to_a_channel()
+    {
+        $this->assertInstanceOf('Forum\Channel', $this->thread->channel);
+    }
+    /** @test **/
+    public function a_reader_can_filter_threads_according_to_a_tag()
+    {
+        // given we have a channel...
+        $channel = create('Forum\Channel');
+        //$channel2 = create('Forum\Channel');
+        $threadInChannel = create('Forum\Thread', ['channel_id'=>$channel->id]);
+        $threadNotInChannel = create('Forum\Thread');
+
+        //given we have a thread associated to one channel a user will see only threads in channel
+        $this->get('/threads/'.$channel->slug)
+          ->assertSee($threadInChannel->title)
+          ->assertDontSee($threadNotInChannel->title);
+    }
+    /** @test **/
+    public function a_user_can_filter_trade_by_user_name()
+    {
+        $john = create('Forum\User', ['name'=>'JohnDoe','id'=>3]);
+        $threadByJohn = create('Forum\Thread', ['user_id'=>$john->id]);
+        $threadNotByJohn = create('Forum\Thread');
+        $response = $this->get('/threads?by=JohnDoe');
+        $response->assertSee($threadByJohn->title);
+        //  ->assertDontSee($threadNotByJohn->title);
+    }
+    /** @test **/
+    public function a_user_can_filter_threads_by_popularity()
+    {
+        //Given we have three threadsCount
+
+        // with 2 replies, 3 replies and 0 replies respectively.
+        $threadWithTwoReplies = create('Forum\Thread');
+        create('Forum\Reply', ['thread_id'=>$threadWithTwoReplies->id], 2);
+
+        $threadWithThreeReplies = create('Forum\Thread');
+        create('Forum\Reply', ['thread_id'=>$threadWithThreeReplies->id], 3);
+
+        $threadWithNoReplies = $this->thread;
+        // when i filter threads by popularities they should return by popularity.
+        $response = $this->getJson('threads?popular=1')->json();
+        $replies_count = array_column($response['data'], 'replies_count');
+        //dd($replies);
+
+        // then they should be returned from the most replies to least.
+        $this->assertEquals([3,2,0], $replies_count);
+    }
+}

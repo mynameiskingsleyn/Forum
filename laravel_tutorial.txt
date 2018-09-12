@@ -1,0 +1,142 @@
+Larval tutorial
+php artisan make:migration add_user_id_col_to_questions —create=questions( this will create a migration for a new table called questions)
+
+php artisan make:migration add_user_id_col_to_questions --table=questions(this will create a new migration to update questions table).
+
+New Project—>
+larval new project_name  or composer create-project —prefer-dist laravel/laravel project-name….
+
+tutorial —> download codes —> http://jacurt.us/laravel-6
+Create Model —>
+1. create model migration combo —> php artisan make:model model-name -m(or —migration).
+2. Create model migration and resource combo ->
+	php artisan make:model model-name -mr.
+3. Create model with migration and controller -> php artisan make:model model-name -mc.
+
+laravelcollectives..
+composer require "laravelcollective/html":"^5.4.0"
+or composer update
+
+Sessions ==> Session::put(‘key’, ‘value’)
+flash session => Session::flash(‘key’,’value’)
+
+Download documentations —> https://kapeli.com/dash_ios
+
+Good resources—> http://www.laravel-recipes.com/recipes/124/
+
+laravel mix…
+npm run dev…
+npm run watch
+mix.js(location,destination)
+we can also use copy , copyDirectory(location,destination)
+.disableNotifications(); .browserSynch({ ‘proxy’:      });
+.version();
+
+preset —>  php artisan preset bootstrap, vue, react, none..
+Install presets
+e.g -> composer require laravel-frontend-presets/zurb-foundation
+php artisan preset foundation  OR php artisan preset foundation-auth.
+mailable—>
+make a mail -> php artisan make:mail name-of-email —markdown=email.contact   .. markdown will add markdown
+
+Notifiable->
+Used for smaller alert….
+php artisan make:notification name-of-notification
+
+send cms—>
+
+We will use Nexmo… to do this,
+—> composer require nexmo/client .
+
+
+USING FACTORY TO CREATE RANDOM DATA
+Creating random data—> we use factory.. we create a factory.
+Now we run tinker and then type —> factory(‘App\Thread,50’)->create()   <— name of model to create factory for.
+Create items for existing data—>(using threads and replies)
+>>> $threads->each(function($thread){factory(‘App\Reply’,10)->create([‘thread_id’=>$thread->id  ])};
+PHPUNIT TEST IN LARAVEL
+1. Create the test class inside “test/feature” =>somethingTest( can also use the artisan command ->php artisan make:test BasicTest<— (test name ending in Test) or art make:test ChannelTest --unit(for unit test)
+2. You can change the phpUnit.xml to contain 2 more info this info is <env name="DB_CONNECTION" value="sqlite" />
+	<env name="DB_DATABASE" value=":memory:" />
+to run use ./vendor/bin/phpunit --filter NameOfTest
+
+Set App Name -> php artisan app:name yourAppName.
+
+Login a user—> Auth::loginUsingId(2);
+php test unit
+ShouldReturn, shouldbeCalled
+NOTE
+:> Assertion issue -> https://laracasts.com/discuss/channels/general-discussion/assertsee-missing
+
+Assertions list -> https://laravel.com/docs/5.1/testing#phpunit-assertions,  https://laravel.com/docs/5.5/http-tests#available-assertions
+
+Assertion after make and post
+$response = $this->post('/threads', $thread->toArray());
+ $this->get($response->headers->get('location’))->assertsee()
+If exception handling not working try:->
+$this->withExceptionHandling();
+Create helper->
+Go to composer.json, in autoload-dev: we create  helper.
+after editing composer, remember to run—> composer dump-autoload.
+
+
+SEEDING->
+run -> php artisan DB:seed
+larval uses bcrypt for password encryption
+
+Slugs.
+For a route to use slugs, add function getRouteKeyName() and return ‘slug’ (do this in the model)
+
+Scope ( very beautiful)..
+A prefix style to apply something to the calling object
+$thread->filter()->get
+https://laraveldaily.com/query-scopes-convenient-way-to-isolate-often-used-conditions/
+
+toSql… -> its used on query builders directory.
+dd(DB::getQueryLog()); ->  Get the last query ran..
+
+Debugger..
+install—> composer require barryvdh/laravel-debugbar.
+then register to use.
+if($this->app->isLocal()){$this->app->register(Barryvdh\Debugbar\ServiceProvider::class);
+do this inside AppServiceProvider.
+withoutGlobalScopes() -> Used to disable global scope..
+
+POLICY -> php artisan make:policy policy_name. (this is like the guide on what can be done to this model including what a user can do
+can also use  php artisan make:policy policy_name —model=model_name.
+This will associate a model to this thereby creating necessary functions.
+once created you have to updated AuthServiceProvider adding model and policy. to use $this->authorize(ability, item)
+eg $this->authorize(‘update’,$thread)
+Use in blade.
+  @can(‘ability’, model) ………… @endcan..
+
+(new \ReflectionClass($thread))->getShortName().
+new\ReflectionClass($thread) returns the class name like Forum\Thread and the getShortName() method returns just the Thread part..
+
+Events monitoring—>
+checkout class ->vendor/laravel/framework/src/illuminate/Database/Eloquent/Model.php..
+
+Events….
+   —> created, deleted, deleting, updated.
+
+
+working with view.
+run npm install.
+compile —> run —> npm run dev.
+Boot up watcher —> npm run watch.
+
+
+
+
+
+
+
+
+Very helpful for valet issue
+https://laracasts.com/discuss/channels/general-discussion/getting-valet-not-found-error
+
+Brew help issues
+  https://docs.brew.sh/Troubleshooting
+
+IMPORTANT!!
+art ide-helper:models ——> run this after model creation to help resolve identify]
