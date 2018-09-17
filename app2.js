@@ -43837,6 +43837,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -43850,12 +43851,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     return {
       items: this.data
     };
-  },
-
-  mothods: {
-    remove: function remove(index) {
-      this.items.splice(index, 1);
-    }
   }
 });
 
@@ -43977,6 +43972,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -44007,10 +44003,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     destroy: function destroy() {
       axios.delete('/replies/' + this.data.id);
-      //  $(this.$el).fadeOut(300,()=>{
-      //    flash('Reply deleted');
-      //  });
-      $this.$emit('deleted', this.data.id);
+      $(this.$el).fadeOut(300, function () {
+        flash('Reply deleted');
+      });
     }
   }
 
@@ -44157,6 +44152,8 @@ var render = function() {
     "div",
     { staticClass: "panel panel-default", attrs: { id: "reply_" + _vm.id } },
     [
+      _c("h3", [_vm._v(" this is a reply yall ")]),
+      _vm._v(" "),
       _c(
         "div",
         {
@@ -44166,11 +44163,7 @@ var render = function() {
         [
           _c("div", { staticClass: "level" }, [
             _c("div", { staticClass: "flex" }, [
-              _vm._v(
-                "\n          Created edit: " +
-                  _vm._s(_vm.data.created_at) +
-                  "\n          By: "
-              ),
+              _vm._v("\n          Created edit: Random dates\n          By: "),
               _c("a", {
                 attrs: { href: "'/profiles/'+data.owner.name" },
                 domProps: { textContent: _vm._s(_vm.data.owner.name) }
@@ -44272,13 +44265,14 @@ var render = function() {
                 staticClass: "flex",
                 domProps: { textContent: _vm._s(_vm.body) }
               }),
-          _vm._v(" "),
+          _vm._v("\n        //  @if(Auth::check())\n          "),
           _c(
             "div",
             {},
             [_c("favorite", { attrs: { reply: { data: _vm.data } } })],
             1
-          )
+          ),
+          _vm._v("\n        //  @endif\n\n      ")
         ]),
         _vm._v(" "),
         _c("br")
@@ -44308,21 +44302,8 @@ var render = function() {
     "div",
     [
       _vm._v("\n  This is reply template\n  "),
-      _vm._l(_vm.items, function(reply, index) {
-        return _c(
-          "div",
-          [
-            _c("reply", {
-              attrs: { data: reply },
-              on: {
-                deleted: function($event) {
-                  _vm.remove(index)
-                }
-              }
-            })
-          ],
-          1
-        )
+      _vm._l(_vm.items, function(reply) {
+        return _c("div", [_c("h1", [_vm._v("one reply more")])])
       })
     ],
     2

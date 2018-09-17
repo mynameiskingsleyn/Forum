@@ -31,25 +31,29 @@
 
                             </article>
 
-                            <hr>
+
                     </div>
 
                 </div>
-                <h3>Replies</h3>
                 <!-- <div class="">
+                  <h3>Replies</h3>
                   <replies :data="{{ $replies }}"> </replies>
                 </div> -->
 
-                <replies :data="{{ $replies }}"> </replies>
+                <div class="">
+                  <replies :data="{{ $replies }}"> </replies>
+                </div>
+
+
                 <!-- @foreach($replies as $reply)
                     @include('threads._partials._reply')
                 @endforeach -->
 
-                @if(auth()->check())
+                <!-- @if(auth()->check())
                     @include('threads._partials.forms._replyForm')
                 @else
                   <p class="text-center">Please <a href="{{ route('login') }}">Sign in </a> to participate in the discussion</p>
-                @endif
+                @endif -->
             </div>
             <div class="col-md-4">
               <div class="panel panel-default">

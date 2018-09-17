@@ -34,6 +34,7 @@ class ThreadsController extends Controller
             //dd($threads);
             return $threads;
         }
+        //Session::flash('flash', 'this is threads home page');
         //dd($threads->toSql());
         return view('threads.index')->withThreads($threads)->withChannel($channel? :null);
     }
@@ -74,7 +75,7 @@ class ThreadsController extends Controller
             'body'=> $request->body
         ]);
         //dd("No problem ".$thread->user_id);
-        Session::flash('success', 'Thread created succesfully');
+        // Session::flash('success', 'Thread created succesfully');
         return redirect($thread->path())->with('flash', 'Your thread has been published!!');
         //return redirect()->route('threads.show',$thread->id); */
     }

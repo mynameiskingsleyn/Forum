@@ -1,23 +1,18 @@
 <template>
+
     <div :id="'reply_' +id "class="panel panel-default">
         <div class="panel-heading" style="padding-bottom:20px;">
           <div class="level">
             <div class="flex">
-              Created: { data.created_at }
+              Created edit: {{ data.created_at }}
               By: <a href="'/profiles/'+data.owner.name" v-text="data.owner.name"></a>
               <span class="likes"> </span>
             </div>
             <span class="level">
 
-              @can('update',$reply)
+
                 <div class="">
                   <span style="float:right; margin-bottom:20px;">
-
-                    <!-- <form class="" action="{{route('reply.delete',$reply)}}" method="post">
-                      {{ csrf_field() }}
-                      {{ method_field('DELETE') }}
-                      <button type="submit" name="button" class="btn btn-danger btn-xs">Delete Reply</button>
-                    </form> -->
                     <button type="button" name="button" class="btn btn-xs btn-danger" @click="destroy">Delete Reply</button>
                     <button type="button" name="button" class="btn btn-xs" @click="editing=true">Edit Reply</button>
                     <!-- <a href="/reply/{{$reply->id}}/edit/" class="btn btn-xs">Edit Reply</a> -->
@@ -25,7 +20,7 @@
 
                 </div>
 
-              @endcan
+
 
             </span>
 
@@ -48,14 +43,14 @@
             <div class="flex" v-else v-text="body">
 
             </div>
-            <!--  @if(Auth::check())
+            <!--  @if(Auth::check()) -->
               <div class="">
                 <!-- {{ $reply->getFavoritesCountAttribute() }} {{ str_plural('favorite',$reply->getFavoritesCountAttribute()) }} -->
                 <favorite :reply="{data}"> </favorite>
 
 
               </div>
-              @endif -->
+            <!--  @endif -->
 
           </div>
 
@@ -97,10 +92,11 @@
 
       destroy(){
           axios.delete('/replies/'+this.data.id);
-          $(this.$el).fadeOut(300,()=>{
-            flash('Reply deleted');
-          });
-
+        //  $(this.$el).fadeOut(300,()=>{
+        //    flash('Reply deleted');
+        //  });
+          $this.$emit('deleted',this.data.id);
+          
       }
 
     }

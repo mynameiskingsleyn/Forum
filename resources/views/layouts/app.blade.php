@@ -27,7 +27,7 @@
       <flash message="{{ session('flash') }}"></flash>
 
 
-      @include('_includes._messages')
+      <!-- @include('_includes._messages') -->
     </div>
 
     <!-- Scripts -->
