@@ -33,6 +33,9 @@ $factory->define(Forum\Thread::class, function ($faker) {
         'body' =>  $faker->paragraph
    ];
 });
+// $factory->define(Forum\Thread::class, function ($attr) {
+//     return $attr;
+// });
 $factory->define(Forum\Reply::class, function ($faker) {
     return [
         'thread_id' => function () {

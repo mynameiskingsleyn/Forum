@@ -1,0 +1,3 @@
+"id" "name" "email" "password" "remember_token" "creaded_at" "updated_at"
+ 1   "King" "king@yahoo.com" "bcrypt('password')" str_random(7) now() now()
+ 

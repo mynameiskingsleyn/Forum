@@ -43,13 +43,15 @@
                 <div class="">
                   <replies :data="{{ $replies }}" @removed="repliesCount--"> </replies>
                 </div>
+                <!-- @foreach($replies as $reply)
+                    @include('threads._partials._reply')
+                @endforeach -->
 
-
-                 @if(auth()->check())
+                <!-- @if(auth()->check())
                     @include('threads._partials.forms._replyForm')
                 @else
                   <p class="text-center">Please <a href="{{ route('login') }}">Sign in </a> to participate in the discussion</p>
-                @endif 
+                @endif -->
             </div>
             <div class="col-md-4">
               <div class="panel panel-default">

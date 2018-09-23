@@ -41,16 +41,13 @@
               <button type="button" name="button" class="btn btn-xs btn-link" @click="editing=false"> Cancel </button>
             </div>
             <div class="flex" v-else v-text="body">
-
             </div>
-            <!--  @if(Auth::check()) -->
-              <div class="">
-                <!-- {{ $reply->getFavoritesCountAttribute() }} {{ str_plural('favorite',$reply->getFavoritesCountAttribute()) }} -->
-                <favorite :reply="{data}"> </favorite>
 
-
+              <div class="" v-if="signedIn">
+                
+                <favorite :reply="data"> </favorite>
               </div>
-            <!--  @endif -->
+
 
           </div>
 
@@ -76,6 +73,9 @@
     components :{
       Favorite
     },
+    mounted:{
+
+    },
     methods:{
       update(){
         axios.patch('/replies/'+this.data.id,{
@@ -89,14 +89,19 @@
       toggle(){
         this.editing = !this.editing;
       },
+      computed: {
+        signedIn(){
+          return window.App.signedIn;
+        }
+      },
 
       destroy(){
           axios.delete('/replies/'+this.data.id);
         //  $(this.$el).fadeOut(300,()=>{
         //    flash('Reply deleted');
         //  });
-          $this.$emit('deleted',this.data.id);
-          
+          this.$emit('deleted',this.data.id);
+
       }
 
     }

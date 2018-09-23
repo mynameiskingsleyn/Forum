@@ -2,8 +2,9 @@
   <button type="submit" :class="classes" @click="toggle">
     <span class="glyphicon glyphicon-heart"></span>
     <span v-text="favoritesCount"></span>
-    Favorite
+    Favorite  shit balls
   </button>
+
 </template>
 
 <script>

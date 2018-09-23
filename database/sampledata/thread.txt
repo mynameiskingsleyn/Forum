@@ -1,0 +1,5 @@
+id,  user_id, channel_id,  title body,  created_at,  updated_at
+1,12,33,"testing data 1","This is a sample data test 1",2018-08-17 04:22:45,2018-08-17 04:22:45
+2,12,33,"testing data 1","This is a sample data test 2",2018-08-17 04:22:45,2018-08-17 04:22:45
+3,12,33,"testing data 1","This is a sample data test 3",2018-08-17 04:22:45,2018-08-17 04:22:45
+4,12,33,"testing data 1","This is a sample data test 4",2018-08-17 04:22:45,2018-08-17 04:22:45

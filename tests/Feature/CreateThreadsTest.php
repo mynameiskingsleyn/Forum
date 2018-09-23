@@ -12,6 +12,7 @@ use Illuminate\Foundation\Testing\DatabaseTransaction;
 //use Forum\Reply;
 use Forum\Activity;
 use Forum\Reply;
+use Forum\Thread;
 
 class CreateThreadsTest extends TestCase
 {

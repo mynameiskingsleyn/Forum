@@ -43759,15 +43759,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  probs: ['data'],
+  props: ['initialRepliesCount'],
   components: {
     Replies: __WEBPACK_IMPORTED_MODULE_0__components_Replies_vue___default.a
   },
   data: function data() {
     return {
-      data: this.data
+      repliesCount: this.initialRepliesCount,
+      repliesCount1: 5
     };
-  }
+  },
+
+  methods: {}
+
 });
 
 /***/ }),
@@ -43836,7 +43840,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 
@@ -43852,9 +43855,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
   },
 
-  mothods: {
+  methods: {
     remove: function remove(index) {
       this.items.splice(index, 1);
+      flash('Reply deleted');
+      this.$emit('removed');
     }
   }
 });
@@ -43974,9 +43979,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -43993,6 +43995,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   components: {
     Favorite: __WEBPACK_IMPORTED_MODULE_0__Favorite_vue___default.a
   },
+  mounted: {},
   methods: {
     update: function update() {
       axios.patch('/replies/' + this.data.id, {
@@ -44005,12 +44008,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     toggle: function toggle() {
       this.editing = !this.editing;
     },
+
+    computed: {
+      signedIn: function signedIn() {
+        return window.App.signedIn;
+      }
+    },
+
     destroy: function destroy() {
       axios.delete('/replies/' + this.data.id);
       //  $(this.$el).fadeOut(300,()=>{
       //    flash('Reply deleted');
       //  });
-      $this.$emit('deleted', this.data.id);
+      this.$emit('deleted', this.data.id);
     }
   }
 
@@ -44077,6 +44087,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['reply'],
@@ -44131,7 +44142,7 @@ var render = function() {
       _c("span", { staticClass: "glyphicon glyphicon-heart" }),
       _vm._v(" "),
       _c("span", { domProps: { textContent: _vm._s(_vm.favoritesCount) } }),
-      _vm._v("\n  Favorite\n")
+      _vm._v("\n  Favorite  shit balls\n")
     ]
   )
 }
@@ -44273,12 +44284,9 @@ var render = function() {
                 domProps: { textContent: _vm._s(_vm.body) }
               }),
           _vm._v(" "),
-          _c(
-            "div",
-            {},
-            [_c("favorite", { attrs: { reply: { data: _vm.data } } })],
-            1
-          )
+          _vm.signedIn
+            ? _c("div", {}, [_c("favorite", { attrs: { reply: _vm.data } })], 1)
+            : _vm._e()
         ]),
         _vm._v(" "),
         _c("br")
@@ -44306,26 +44314,22 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    [
-      _vm._v("\n  This is reply template\n  "),
-      _vm._l(_vm.items, function(reply, index) {
-        return _c(
-          "div",
-          [
-            _c("reply", {
-              attrs: { data: reply },
-              on: {
-                deleted: function($event) {
-                  _vm.remove(index)
-                }
+    _vm._l(_vm.items, function(reply, index) {
+      return _c(
+        "div",
+        [
+          _c("reply", {
+            attrs: { data: reply },
+            on: {
+              deleted: function($event) {
+                _vm.remove(index)
               }
-            })
-          ],
-          1
-        )
-      })
-    ],
-    2
+            }
+          })
+        ],
+        1
+      )
+    })
   )
 }
 var staticRenderFns = []

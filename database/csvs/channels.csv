@@ -1,0 +1,4 @@
+'id' 'name' 'slug' 'created_at' 'updated_at'
+1 "PHP" "php" now()  now()
+2 "SQL" "sql" now()  now()
+3 "DB"  "db"  now()  now()
