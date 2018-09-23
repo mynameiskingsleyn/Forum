@@ -43978,7 +43978,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -44142,7 +44141,7 @@ var render = function() {
       _c("span", { staticClass: "glyphicon glyphicon-heart" }),
       _vm._v(" "),
       _c("span", { domProps: { textContent: _vm._s(_vm.favoritesCount) } }),
-      _vm._v("\n  Favorite  shit balls\n")
+      _vm._v("\n  Favorite  shit balls t\n")
     ]
   )
 }

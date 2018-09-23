@@ -44,7 +44,6 @@
             </div>
 
               <div class="" v-if="signedIn">
-                
                 <favorite :reply="data"> </favorite>
               </div>
 
