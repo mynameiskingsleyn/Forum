@@ -1113,6 +1113,11 @@ var app = new Vue({
 window._ = __webpack_require__(13);
 window.Vue = __webpack_require__(15);
 
+window.Vue.prototype.authorize = function (handler) {
+  // stack on additional admin priveleges ..
+  return handler(window.App.user);
+};
+
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This
@@ -43995,7 +44000,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   components: {
     Favorite: __WEBPACK_IMPORTED_MODULE_0__Favorite_vue___default.a
   },
-  mounted: {},
   methods: {
     update: function update() {
       axios.patch('/replies/' + this.data.id, {
@@ -44008,19 +44012,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     toggle: function toggle() {
       this.editing = !this.editing;
     },
-
-    computed: {
-      signedIn: function signedIn() {
-        return window.App.signedIn;
-      }
-    },
-
     destroy: function destroy() {
       axios.delete('/replies/' + this.data.id);
       //  $(this.$el).fadeOut(300,()=>{
       //    flash('Reply deleted');
       //  });
       this.$emit('deleted', this.data.id);
+    }
+  },
+  computed: {
+    signedIn: function signedIn() {
+      return window.App.signedIn;
+    },
+    canUpdate: function canUpdate() {
+      var _this = this;
+
+      return this.authorize(function (user) {
+        return _this.data.user_id == user.id;
+      });
+      //return window.App.user.id == this.data.owner.id;
     }
   }
 
@@ -44142,7 +44152,7 @@ var render = function() {
       _c("span", { staticClass: "glyphicon glyphicon-heart" }),
       _vm._v(" "),
       _c("span", { domProps: { textContent: _vm._s(_vm.favoritesCount) } }),
-      _vm._v("\n  Favorite  shit balls\n")
+      _vm._v("\n  Favorite \n")
     ]
   )
 }
@@ -44178,9 +44188,9 @@ var render = function() {
           _c("div", { staticClass: "level" }, [
             _c("div", { staticClass: "flex" }, [
               _vm._v(
-                "\n          Created edit: " +
+                "\n        Created edit: " +
                   _vm._s(_vm.data.created_at) +
-                  "\n          By: "
+                  "\n        By: "
               ),
               _c("a", {
                 attrs: { href: "'/profiles/'+data.owner.name" },

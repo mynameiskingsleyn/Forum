@@ -2,6 +2,11 @@
 window._ = require('lodash');
 window.Vue = require('vue');
 
+window.Vue.prototype.authorize = function(handler){
+  // stack on additional admin priveleges ..
+  return handler(window.App.user);
+}
+
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This

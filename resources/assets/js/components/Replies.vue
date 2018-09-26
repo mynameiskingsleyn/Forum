@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div v-for="(reply, index) in items">
-       <reply :data="reply" @deleted="remove(index)"></reply>
-    </div>
+  <div v-for="(reply, index) in items">
+     <reply :data="reply" @deleted="remove(index)"></reply>
+  </div>
 
   </div>
 

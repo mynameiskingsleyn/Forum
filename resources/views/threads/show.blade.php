@@ -35,21 +35,16 @@
                     </div>
 
                 </div>
-                <!-- <div class="">
-                  <h3>Replies</h3>
-                  <replies :data="{{ $replies }}"> </replies>
-                </div> -->
-
                 <div class="">
                   <replies :data="{{ $replies }}" @removed="repliesCount--"> </replies>
                 </div>
 
 
                  @if(auth()->check())
-                    @include('threads._partials.forms._replyForm')
+                    <!-- @include('threads._partials.forms._replyForm') -->
                 @else
                   <p class="text-center">Please <a href="{{ route('login') }}">Sign in </a> to participate in the discussion</p>
-                @endif 
+                @endif
             </div>
             <div class="col-md-4">
               <div class="panel panel-default">

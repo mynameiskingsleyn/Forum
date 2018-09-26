@@ -3,19 +3,18 @@
     <div :id="'reply_' +id "class="panel panel-default">
         <div class="panel-heading" style="padding-bottom:20px;">
           <div class="level">
-            <div class="flex">
-              Created edit: {{ data.created_at }}
-              By: <a href="'/profiles/'+data.owner.name" v-text="data.owner.name"></a>
-              <span class="likes"> </span>
-            </div>
+          <div class="flex">
+            Created edit: {{ data.created_at }}
+            By: <a href="'/profiles/'+data.owner.name" v-text="data.owner.name"></a>
+            <span class="likes"> </span>
+          </div>
             <span class="level">
 
 
-                <div class="">
+                <div class="" >
                   <span style="float:right; margin-bottom:20px;">
                     <button type="button" name="button" class="btn btn-xs btn-danger" @click="destroy">Delete Reply</button>
                     <button type="button" name="button" class="btn btn-xs" @click="editing=true">Edit Reply</button>
-                    <!-- <a href="/reply/{{$reply->id}}/edit/" class="btn btn-xs">Edit Reply</a> -->
                   </span>
 
                 </div>
@@ -30,26 +29,27 @@
         </div>
         <div class="panel-body">
 
-          <div class="level">
-            <div class="flex" v-if="editing">
-              <div class="form-group">
-                <textarea name="name" rows="8" class="form-control" v-model="body">
+        <div class="level">
 
-                </textarea>
-              </div>
-              <button type="button" name="button" class="btn btn-xs btn-link" @click="update"> Update </button>
-              <button type="button" name="button" class="btn btn-xs btn-link" @click="editing=false"> Cancel </button>
+          <div class="flex" v-if="editing">
+            <div class="form-group">
+              <textarea name="name" rows="8" class="form-control" v-model="body">
+
+              </textarea>
             </div>
-            <div class="flex" v-else v-text="body">
-            </div>
-
-              <div class="" v-if="signedIn">
-                
-                <favorite :reply="data"> </favorite>
-              </div>
-
-
+            <button type="button" name="button" class="btn btn-xs btn-link" @click="update"> Update </button>
+            <button type="button" name="button" class="btn btn-xs btn-link" @click="editing=false"> Cancel </button>
           </div>
+
+          <div class="flex" v-else v-text="body">
+          </div>
+
+          <div class="" v-if="signedIn">
+              <favorite :reply="data"> </favorite>
+          </div>
+
+
+        </div>
 
             <br>
 
@@ -73,9 +73,6 @@
     components :{
       Favorite
     },
-    mounted:{
-
-    },
     methods:{
       update(){
         axios.patch('/replies/'+this.data.id,{
@@ -89,12 +86,6 @@
       toggle(){
         this.editing = !this.editing;
       },
-      computed: {
-        signedIn(){
-          return window.App.signedIn;
-        }
-      },
-
       destroy(){
           axios.delete('/replies/'+this.data.id);
         //  $(this.$el).fadeOut(300,()=>{
@@ -104,6 +95,15 @@
 
       }
 
+    },
+    computed: {
+      signedIn(){
+        return window.App.signedIn;
+      },
+      canUpdate(){
+        return this.authorize(user=> this.data.user_id == user.id);
+        //return window.App.user.id == this.data.owner.id;
+      }
     }
 
   }
