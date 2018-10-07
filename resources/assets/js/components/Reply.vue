@@ -4,14 +4,14 @@
         <div class="panel-heading" style="padding-bottom:20px;">
           <div class="level">
           <div class="flex">
-            Created edit: {{ data.created_at }}
+            Created edit: <span v-text="ago"></span>
             By: <a href="'/profiles/'+data.owner.name" v-text="data.owner.name"></a>
             <span class="likes"> </span>
           </div>
             <span class="level">
 
 
-                <div class="" >
+                <div class="" v-if="canUpdate" >
                   <span style="float:right; margin-bottom:20px;">
                     <button type="button" name="button" class="btn btn-xs btn-danger" @click="destroy">Delete Reply</button>
                     <button type="button" name="button" class="btn btn-xs" @click="editing=true">Edit Reply</button>
@@ -60,6 +60,7 @@
 </template>
 <script>
   import Favorite from './Favorite.vue';
+  import moment from 'moment';
   export default {
 
     props: ['data'],
@@ -103,6 +104,9 @@
       canUpdate(){
         return this.authorize(user=> this.data.user_id == user.id);
         //return window.App.user.id == this.data.owner.id;
+      },
+      ago(){
+        return moment(this.data.created_at).fromNow();
       }
     }
 

@@ -12,7 +12,7 @@ class RepliesController extends Controller
     // allow only logged in users.
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except'=>'index']);
     }
     // store
 
@@ -25,11 +25,14 @@ class RepliesController extends Controller
           ]
         );
 
-        $thread->addReply([
+        $reply=$thread->addReply([
             'body' => request('body'),
             'user_id' => auth()->id()
         ]);
         //Session::flash('success', 'Reply saved');
+        if (request()->expectsJson()) {
+            return $reply->load('owner');
+        }
         return back()->with('flash', 'Your reply has been saved');
     }
     public function destroy(Reply $reply)
@@ -51,5 +54,9 @@ class RepliesController extends Controller
         $reply->update(['body' => request('body')]);
 
         //$reply->update(request(['body']));
+    }
+    public function index($channelId, Thread $thread)
+    {
+        return $thread->replies()->latest()->paginate(4);
     }
 }

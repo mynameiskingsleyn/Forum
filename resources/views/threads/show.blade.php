@@ -36,11 +36,13 @@
 
                 </div>
                 <div class="">
-                  <replies :data="{{ $replies }}" @removed="repliesCount--"> </replies>
+                  <replies :data="{{ $replies }}" :thread="{{ $thread }}" @removed="repliesCount--"
+                  @added="repliesCount++"> </replies>
                 </div>
 
 
                  @if(auth()->check())
+
                     <!-- @include('threads._partials.forms._replyForm') -->
                 @else
                   <p class="text-center">Please <a href="{{ route('login') }}">Sign in </a> to participate in the discussion</p>

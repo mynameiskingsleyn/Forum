@@ -1,9 +1,10 @@
 <script>
   import Replies from '../components/Replies.vue';
+
   export default {
     props:['initialRepliesCount'],
     components:{
-      Replies
+      Replies,
     },
     data (){
       return {
@@ -12,7 +13,7 @@
       };
     },
     methods:{
-      
+
     }
 
   }

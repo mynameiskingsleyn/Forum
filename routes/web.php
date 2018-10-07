@@ -28,6 +28,7 @@ Route::post('/threads/{thread}/replies', 'RepliesController@store');
 Route::delete('/replies/{reply}', 'RepliesController@destroy')->name('reply.delete');
 Route::patch('/replies/{reply}', 'RepliesController@update')->name('reply.update');
 Route::get('/threads/{channel}', 'ThreadsController@index');
+Route::get('/threads/{channel}/{thread}/replies', 'RepliesController@index');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

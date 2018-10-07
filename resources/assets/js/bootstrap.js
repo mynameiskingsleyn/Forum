@@ -4,7 +4,11 @@ window.Vue = require('vue');
 
 window.Vue.prototype.authorize = function(handler){
   // stack on additional admin priveleges ..
-  return handler(window.App.user);
+  if(window.App.user){
+    return handler(window.App.user);
+  }
+  return false;
+
 }
 
 /**

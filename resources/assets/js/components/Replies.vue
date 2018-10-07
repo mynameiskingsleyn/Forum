@@ -1,9 +1,12 @@
 <template>
   <div>
-  <div v-for="(reply, index) in items">
-     <reply :data="reply" @deleted="remove(index)"></reply>
-  </div>
-
+      <div v-for="(reply, index) in items" :key="reply.id">
+         <reply :data="reply" @deleted="remove(index)"></reply>
+      </div>
+      <paginator :dataSet="dataSet" @updated="fetch"></paginator>
+      <div class="" v-if="signedIn">
+        <new-reply :thread_id="thread.id" @created="add"> </new-reply>
+      </div>
   </div>
 
 </template>
@@ -11,24 +14,49 @@
 
 <script>
   import Reply from './Reply.vue';
-
+  import newReply from './newReply.vue';
+  import collection from '../mixins/collection';
   export default {
-
-    props: ['data'],
+    props: ['thread'],
     components: {
-      Reply
+      Reply, newReply
     },
+    mixins:[collection],
     data() {
       return{
-        items:this.data
+        dataSet:false,
+        endpoint: location.pathname+'/replies'
       }
     },
+    created(){
+      this.fetch();
+    },
     methods: {
-        remove(index){
-          this.items.splice(index, 1);
-          flash('Reply deleted');
-          this.$emit('removed')
+
+        fetch(page){
+          axios.get(this.url(page))
+              .then(this.refresh);
+        },
+        url(page){
+
+          if(! page){
+            let query = location.search.match(/page=(\d+)/);
+            page = query ? query[1]:1;
+          }
+        //  console.log(page);
+          return location.pathname+'/replies?page='+page;
+        },
+        refresh({data}){
+          //console.log(response['data']);
+          this.dataSet = data;
+          this.items = data.data;
+          window.scrollTo(0,0);
         }
+    },
+    computed:{
+      signedIn(){
+        return window.App.signedIn;
+      }
     }
   }
 

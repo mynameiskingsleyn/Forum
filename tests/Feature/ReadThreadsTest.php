@@ -103,4 +103,16 @@ class ReadThreadsTest extends TestCase
         // then they should be returned from the most replies to least.
         $this->assertEquals([3,2,0], $replies_count);
     }
+    /**
+    * @test
+    */
+    public function user_can_request_reply_for_a_given_thread()
+    {
+        $thread = create('Forum\Thread');
+        create('Forum\Reply', ['thread_id'=>$thread->id], 2);
+        $response = $this->getJson($thread->path().'/replies')->json();
+        //dd($response);
+        $this->assertCount(2, $response['data']);
+        $this->assertEquals(2, $response['total']);
+    }
 }
