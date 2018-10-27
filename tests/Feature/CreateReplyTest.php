@@ -3,10 +3,13 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use Tests\Feature\Auth;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+
 use Forum\Reply;
+use Forum\Thread;
 
 class CreateReplyTest extends TestCase
 {
@@ -64,12 +67,32 @@ class CreateReplyTest extends TestCase
     public function authorized_user_can_delete_reply()
     {
         $this->signIn();
+        // $thread = factory('Forum\Thread')->create(['user_id'=>auth()->id()]);
+        //
+        // $reply = create('Forum\Reply', ['user_id'=>auth()->id(),
+        //   'thread_id'=>$thread->id,'body'=>"testing this shit"]);
+        // //$this->assertEquals(1, $reply->thread->replies_count);
+        // //dd($reply->toArray());
+        // $response = $this->post('/threads/'.$thread->id.'/replies', $reply->toArray());
+        // //  dd(Thread::all()->toArray());
+        // //$this->assertEquals(1, $thread->replies_count);
+        // $this->assertDatabaseHas('replies', ['thread_id'=>$thread->id]);
+        // //dd($thread);
+        // //dd($reply->all());
+        // $this->assertEquals(1, Thread::find($thread->id)->replies_count);
+        // //dd($reply->id);
+        // $this->delete("/replies/".$reply->id)->assertStatus(302);
+        // $this->assertDatabaseMissing('replies', [
+        //       'id'=>$reply->id
+        //     ]);
+        // $this->assertEquals(0, $thread->replies_count);
+        // $this->assertEquals(0, $reply->thread->replies_count);
         $reply = create('Forum\Reply', ['user_id'=>auth()->id()]);
-        $this->delete("/replies/$reply->id")
-            ->assertStatus(302);
+        $this->delete("/replies/{$reply->id}")->assertStatus(302);
         $this->assertDatabaseMissing('replies', [
               'id'=>$reply->id
-            ]);
+             ]);
+        $this->assertEquals(0, $reply->thread->fresh()->replies_count);
     }
     /** @test **/
     public function authorized_user_can_edit_reply()

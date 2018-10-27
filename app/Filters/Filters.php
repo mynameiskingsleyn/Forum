@@ -33,6 +33,7 @@ abstract class Filters
         foreach ($this->getFilters() as $filter => $value) {
             if ($this->hasMethod($filter)) {
                 $this->$filter($value);
+                //dd($value);
             }
         }
 

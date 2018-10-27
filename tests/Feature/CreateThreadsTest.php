@@ -24,7 +24,7 @@ class CreateThreadsTest extends TestCase
     {
         $this->signIn();
         $thread = make('Forum\Thread', $overrides);
-        return $this->post('/threads', $thread->toArray());
+        return $this->from('/threads')->post('/threads', $thread->toArray());
     }
 
     /*  public function setUp()
@@ -56,7 +56,7 @@ class CreateThreadsTest extends TestCase
         //$thread = factory('Forum\Thread')->make();
         $thread = make('Forum\Thread');
 
-        $response = $this->post('/threads', $thread->toArray());
+        $response = $this->from('/threads')->post('/threads', $thread->toArray());
         //dd($response->headers->get('location'));
         //Then when we visit the thread page.
         $this->get($response->headers->get('location'))
@@ -80,8 +80,9 @@ class CreateThreadsTest extends TestCase
     public function a_thread_requires_a_valid_channel_id()
     {
         factory('Forum\Channel', 2)->create();
-        $this->publishThread(['channel_id'=>null])
-            ->assertSessionHasErrors('channel_id');
+        $response = $this->publishThread(['channel_id'=>null]);
+        $response->assertSessionHasErrors('channel_id');
+        //dd($response->headers->get('location'));
         $this->publishThread(['channel_id'=>3])
             ->assertSessionHasErrors('channel_id');
     }

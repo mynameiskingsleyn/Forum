@@ -59,6 +59,9 @@
                             {{ str_plural('Thread',$thread->owner->threads_count) }}
                           </p>
                           <p class="text-center"><a href="/threads?by={{$thread->owner->name}}"> More Threads </a> by {{$thread->owner->name}}</p>
+                          <p>
+                            <subscribe-button :active="{{ json_encode($thread->isSubscribedTo) }}"></subscribe-button>
+                          </p>
                       </article>
                       <hr>
                   </div>

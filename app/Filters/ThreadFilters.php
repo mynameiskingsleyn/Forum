@@ -7,7 +7,7 @@ use Forum\User;
 
 class ThreadFilters extends Filters
 {
-    protected $filters =  ['by','popular'];
+    protected $filters =  ['by','popular','unanswered'];
     /**
     * Filter the thread according to username
     * @param $username
@@ -22,5 +22,12 @@ class ThreadFilters extends Filters
     {
         $this->builder->getQuery()->orders=[];
         return $this->builder->orderBy('replies_count', 'desc');
+    }
+    protected function unanswered()
+    {
+        //return $this->builder;
+        //dd();
+        //  dd($this->builder->where('replies_count',0);
+        return $this->builder->where('replies_count', 0);
     }
 }

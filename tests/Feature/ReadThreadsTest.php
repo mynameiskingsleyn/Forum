@@ -104,9 +104,21 @@ class ReadThreadsTest extends TestCase
         $this->assertEquals([3,2,0], $replies_count);
     }
     /**
+    *@test
+    */
+    public function a_user_can_filter_trade_by_those_that_are_unanswered()
+    {
+        $thread = create('Forum\Thread');
+        $reply = create('Forum\Reply', ['thread_id'=>$thread->id]);
+
+        $response = $this->getJson('threads?unanswered=1')->json();
+        //dd($response);
+        $this->assertCount(1, $response['data']);
+    }
+    /**
     * @test
     */
-    public function user_can_request_reply_for_a_given_thread()
+    public function user_can_request_all_reply_for_a_given_thread()
     {
         $thread = create('Forum\Thread');
         create('Forum\Reply', ['thread_id'=>$thread->id], 2);

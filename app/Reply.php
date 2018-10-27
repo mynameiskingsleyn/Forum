@@ -16,17 +16,19 @@ class Reply extends BaseModel
     use Traits\Favoritable;
     use Traits\RecordsActivity;
 
-    // protected static function boot()
-    // {
-    //     parent::boot();
-    //     // static::addGlobalScope('favoritesCount', function ($builder) {
-    //     //     $builder->withCount('favorites');
-    //     // });
-    //     static::deleting(function ($reply) {
-    //         $reply->activity()->delete();
-    //         dd("working yall");
-    //     });
-    // }
+    protected static function boot()
+    {
+        parent::boot();
+        // static::addGlobalScope('favoritesCount', function ($builder) {
+        //     $builder->withCount('favorites');
+        // });
+        static::deleted(function ($reply) {
+            $reply->thread->decrement('replies_count');
+        });
+        static::created(function ($reply) {
+            $reply->thread->increment('replies_count');
+        });
+    }
 
     public function owner()
     {

@@ -36,6 +36,8 @@ class ParticipateInForumTest extends TestCase
         // Then their reply should be visible on the page.
         $this->get($this->thread->path())
             ->assertSee($this->reply->body);
+
+        $this->assertEquals(1, $this->thread->fresh()->replies_count);
     }
     /** @test **/
     public function a_reply_requires_a_body()

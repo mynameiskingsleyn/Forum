@@ -29,6 +29,9 @@ Route::delete('/replies/{reply}', 'RepliesController@destroy')->name('reply.dele
 Route::patch('/replies/{reply}', 'RepliesController@update')->name('reply.update');
 Route::get('/threads/{channel}', 'ThreadsController@index');
 Route::get('/threads/{channel}/{thread}/replies', 'RepliesController@index');
+Route::post('/threads/{channel}/{thread}/subscribe', 'ThreadSubscriptionsController@store');
+Route::delete('/threads/{channel}/{thread}/subscribe', 'ThreadSubscriptionsController@destroy');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -37,3 +40,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/replies/{reply}/favorites', 'FavoritesController@store');
 Route::delete('/replies/{reply}/favorites', 'FavoritesController@destroy');
 Route::get('profiles/{profile_user}', 'ProfilesController@show')->name('profile.show');
+//user ...
+Route::delete('/profiles/{profile_user}/notifications/{notificationId}', 'UserNotificationsController@destroy')->name('notifications.destroy');
+Route::get('/profiles/{profile_user}/notifications', 'UserNotificationsController@index');

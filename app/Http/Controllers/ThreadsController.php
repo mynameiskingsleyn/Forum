@@ -103,6 +103,10 @@ class ThreadsController extends Controller
         $replies = $thread->replies()->get();
         // ->paginate(2);
         //dd($replies->toArray());
+        if (request()->wantsJSon()) {
+            return $thread->append(['replies','channel']);
+        }
+        //return $thread;
         return view('threads.show', compact('thread', 'ch', 'replies')); /// will use the next due to vue..
         //return view('threads.show', compact('thread', 'ch'));
         // dd("great job yall!!");
