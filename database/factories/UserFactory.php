@@ -54,3 +54,14 @@ $factory->define(Forum\Channel::class, function ($faker) {
     'slug' => strtolower($name)
   ];
 });
+$factory->define(\Illuminate\Notifications\DatabaseNotification::class, function ($faker) {
+    return [
+      'id'=> \Ramsey\Uuid\Uuid::uuid4()->toString(),
+      'type'=>'Forum\Notification\ThreadWasUpdated',
+      'notifiable_id' => function () {
+          return auth()->id() ?:factory('Forum\User')->create()->id;
+      },
+      'notifiable_type' => 'Forum\User',
+      'data'=>['foo' => 'bar yall!!']
+  ];
+});

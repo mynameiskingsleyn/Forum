@@ -8,6 +8,7 @@ use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationsTest extends TestCase
 {
@@ -63,19 +64,21 @@ class NotificationsTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $this->signIn();
-        $thread = create('Forum\Thread')->subscribe();
-        $thread->addReply([
-          'user_id' => create('Forum\User')->id,
-          'body' => 'Some body here'
-        ]);
+        // $thread = create('Forum\Thread')->subscribe();
+        // $thread->addReply([
+        //   'user_id' => create('Forum\User')->id,
+        //   'body' => 'Some body here'
+        // ]);
+        create(DatabaseNotification::class);
+        tap(auth()->user(), function ($user) {
+            $this->assertCount(1, $user->unreadNotifications);
+            //$user = auth()->user();
+            $notificationId = $user->unreadNotifications->first()->id;
 
-        $this->assertCount(1, auth()->user()->unreadNotifications);
-        $user = auth()->user();
-        $notificationId = $user->unreadNotifications->first()->id;
+            //clearnotification...
+            $this->delete("/profiles/$user->name/notifications/{$notificationId}");
 
-        //clearnotification...
-        $this->delete("/profiles/$user->name/notifications/{$notificationId}");
-
-        $this->assertCount(0, $user->fresh()->unreadNotifications);
+            $this->assertCount(0, $user->fresh()->unreadNotifications);
+        });
     }
 }

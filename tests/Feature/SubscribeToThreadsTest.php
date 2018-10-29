@@ -52,7 +52,7 @@ class SubscribeToThreadsTest extends TestCase
         $this->assertCount(0, auth()->user()->notifications);
         //Each time a reply is made,
         $thread->addReply([
-        'user_id' => auth()->id(),
+        'user_id' => create('Forum\User')->id,
         'body' => 'Some body here'
       ]);
         //A notification should be prepared for the user..
