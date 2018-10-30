@@ -7,6 +7,7 @@ use Forum\User;
 use Forum\Channel;
 use Forum\Filters\ThreadFilters;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Auth;
 use Session;
 
@@ -88,8 +89,14 @@ class ThreadsController extends Controller
      */
     public function show($channel_slug, Thread $thread)
     {
+        //record that user visited this page...
+
+        //Record a timestamp.
+        //$key = sprintf("user.%s.visits.%s", auth()->id(), $thread->id);
+        //cache()->forever(auth()->user()->visitedThreadCacheKey($thread), Carbon::now());
+        auth()->user()->read($thread);
+        //using database --> $auth()->user()->visits()->create(['thread_id'=>$thread->id,'user_id'=>auth()->id()])
         //find thread with slug..
-        //dd($thread);
         $ch = Channel::where('slug', '=', $channel_slug)->first();
         //dd($thread);
         if (!$ch) {
