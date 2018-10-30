@@ -5,6 +5,7 @@ namespace Forum;
 //use Illuminate\Database\Eloquent\Model;
 use Forum\BaseModel;
 use Forum\Notifications\ThreadWasUpdated;
+use Forum\Events\ThreadHasNewReply;
 
 class Thread extends BaseModel
 {
@@ -65,9 +66,16 @@ class Thread extends BaseModel
         // $this->subscriptions->filter(function ($sub) use ($reply) {
         //     return $sub->user_id != $reply->user_id;
         // })
-        $this->subscriptions
-            ->where('user_id', '!=', $reply->user_id)
-        ->each->notify($reply);
+        //prepare notification..
+        // $this->subscriptions
+        //     ->where('user_id', '!=', $reply->user_id)
+        // ->each->notify($reply);
+
+
+        //event(new ThreadHasNewReply($this, $reply));
+        $this->notifySubscribers($reply);
+
+
         // ->each(function ($sub) use ($reply) {
         //     $sub->user->notify(new ThreadWasUpdated($this, $reply));
         // });
@@ -113,5 +121,20 @@ class Thread extends BaseModel
     public function subscriptions()
     {
         return $this->hasMany(ThreadSubscription::class);
+    }
+
+    public function notifySubscribers($reply)
+    {
+        $this->subscriptions
+          ->where('user_id', '!=', $reply->user_id)
+          ->each->notify($reply);
+    }
+    public function hasUpdatesFor()
+    {
+        //Look in the cache for the proper key..
+
+        // Compare that carbon instance with the $thread->updated_at
+        $key = sprintf("user.%s.visits.%s", auth()->id(), $this->id);
+        return $this->updated_at > cache($key);
     }
 }

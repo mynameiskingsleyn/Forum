@@ -23,7 +23,15 @@
                         @forelse($threads as $thread)
                             <article>
                               <div class="level">
-                               <a href="{{ $thread->path() }}" class="flex"> <h4 >{{ $thread->title }}</h4> </a>
+                               <a href="{{ $thread->path() }}" class="flex">
+                                  @if($thread->hasUpdatesFor(auth()->user()))
+                                    <strong> <h3> {{ $thread->title }}</h3>  </strong>
+                                   @else
+                                    <h4>
+                                      {{ $thread->title }}
+                                    </h4>
+                                    @endif
+                                </a>
                                <strong>{{ $thread->replies_count }} {{str_plural('reply',$thread->replies_count)}}</strong>
                              </div>
                                 <div class="body">{{ $thread->body }}</div>
