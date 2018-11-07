@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Auth;
 use Session;
 
+// use Forum\Inspection\Spam;
+
 class ThreadsController extends Controller
 {
     /**
@@ -63,12 +65,14 @@ class ThreadsController extends Controller
         $this->id = Auth::id();
 
         $this->validate($request, [
-           'title' => 'required|max:225|min:5',
-           'body' =>'required|min:10',
+           'title' => 'required|max:225|min:5|spamfree',
+           'body' =>'required|min:10|spamfree',
            'channel_id' => 'required|exists:channels,id'
        ]);
         //dd($request->all());
         // dd($request->title);
+        // $spam->detect(request('title'));
+        // $spam->detect(request('body'));
         $thread = Thread::create([
             'user_id' => $this->id,
             'channel_id'=> $request->channel_id,
@@ -94,7 +98,10 @@ class ThreadsController extends Controller
         //Record a timestamp.
         //$key = sprintf("user.%s.visits.%s", auth()->id(), $thread->id);
         //cache()->forever(auth()->user()->visitedThreadCacheKey($thread), Carbon::now());
-        auth()->user()->read($thread);
+        if (auth()->check()) {
+            auth()->user()->read($thread);
+        }
+
         //using database --> $auth()->user()->visits()->create(['thread_id'=>$thread->id,'user_id'=>auth()->id()])
         //find thread with slug..
         $ch = Channel::where('slug', '=', $channel_slug)->first();
@@ -140,6 +147,8 @@ class ThreadsController extends Controller
     public function update(Request $request, Thread $thread)
     {
         //
+        $spam->detect(request('title'));
+        $spam->detect(request('body'));
     }
 
     /**

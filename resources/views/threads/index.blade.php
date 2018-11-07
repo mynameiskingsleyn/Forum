@@ -24,7 +24,7 @@
                             <article>
                               <div class="level">
                                <a href="{{ $thread->path() }}" class="flex">
-                                  @if($thread->hasUpdatesFor(auth()->user()))
+                                  @if(auth()->check() && $thread->hasUpdatesFor(auth()->user()))
                                     <strong> <h3> {{ $thread->title }}</h3>  </strong>
                                    @else
                                     <h4>

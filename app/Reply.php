@@ -5,6 +5,7 @@ namespace Forum;
 //use Forum\Traits\Favoritable;
 // use Illuminate\Database\Eloquent\Model;
 use Forum\BaseModel;
+use Carbon\Carbon;
 
 class Reply extends BaseModel
 {
@@ -50,4 +51,15 @@ class Reply extends BaseModel
     // {
     //     return $this->favorites->count();
     // }
+    public function wasJustPublished()
+    {
+        return $this->created_at->gt(Carbon::now()->subMinute());
+    }
+
+    public function mentionedUsers()
+    {
+        preg_match_all('/\@([^\s\.]+)/', $this->body, $matches);
+        $names = $matches[1];
+        return $names;
+    }
 }

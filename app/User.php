@@ -4,6 +4,7 @@ namespace Forum;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -40,6 +41,12 @@ class User extends Authenticatable
         return $this->hasMany(Thread::class, 'user_id')
                     ->latest();
     }
+    public function replies()
+    {
+        return $this->hasMany(Reply::class, 'user_id')
+                  ->latest();
+    }
+
     public function getThreadsCount()
     {
         return $this->threads()->count();
@@ -65,6 +72,11 @@ class User extends Authenticatable
 
     public function visitedThreadCacheKey($thread)
     {
-        return sprintf("user.%s.visits.%s", $this->id(), $thread->id);
+        return sprintf("user.%s.visits.%s", $this->id, $thread->id);
+    }
+
+    public function lastReply()
+    {
+        return $this->hasOne(Reply::class)->latest();
     }
 }

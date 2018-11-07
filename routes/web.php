@@ -24,6 +24,8 @@ Route::get('/threads/{channel}/{thread}', 'ThreadsController@show')->name('threa
 /*Route::get('/threads','ThreadsController@index');
 Route::get('') */
 Route::resource('/threads', 'ThreadsController')->except(['show']);
+// reply store... limit assess to one per minute
+// Route::middleware('throttle:5')->post('/threads/{thread}/replies', 'RepliesController@store');
 Route::post('/threads/{thread}/replies', 'RepliesController@store');
 Route::delete('/replies/{reply}', 'RepliesController@destroy')->name('reply.delete');
 Route::patch('/replies/{reply}', 'RepliesController@update')->name('reply.update');

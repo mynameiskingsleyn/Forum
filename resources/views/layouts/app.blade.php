@@ -37,10 +37,11 @@
       <flash message="{{ session('flash') }}"></flash>
 
 
-      <!-- @include('_includes._messages') -->
+      @include('_includes._messages')
     </div>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
+    <!-- <script src={{ mix('/js/app.js') }}></script> -->
 </body>
 </html>

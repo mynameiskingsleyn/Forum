@@ -20,7 +20,8 @@ class AppServiceProvider extends ServiceProvider
         //\View::composer('threads.create', function ($view) {
         //    $view->with('channels', \Forum\Channel::all());
         //  });
-      //  \View::share('channels', \Forum\Channel::all());
+        //  \View::share('channels', \Forum\Channel::all());
+        \Validator::extend('spamfree', 'Forum\Rules\SpamFree@passes');
     }
 
     /**

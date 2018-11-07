@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use \Exception;
 
 class ParticipateInForumTest extends TestCase
 {
@@ -44,7 +45,41 @@ class ParticipateInForumTest extends TestCase
     {
         $this->signIn();
         $reply = make('Forum\Reply', ['body'=>null]);
-        $this->post('/threads/'.$this->thread->id.'/replies', $reply->toArray())
-          ->assertSessionHasErrors('body');
+        $this->postJson('/threads/'.$this->thread->id.'/replies', $reply->toArray())
+          //->assertSessionHasErrors('body');
+          ->assertStatus(422);
+    }
+    /** @test */
+    public function replies_that_contain_spam_may_not_be_created()
+    {
+        //$this->withoutExceptionHandling();
+        $this->signIn();
+        $thread = create('Forum\Thread');
+
+        $reply = make('Forum\Reply', [
+         'body' => 'Yahoo Customer Support'
+       ]);
+        //$this->expectException(\Exception::class);
+
+        //  dd($thread->repPostPath());
+        $this->postJson($thread->repPostPath(), $reply->toArray())
+              ->assertStatus(422);
+        //dd($response->headers);
+    }
+
+    /** @test */
+    public function user_may_only_reply_a_maximum_of_one_per_minute()
+    {
+        //$this->withoutExceptionHandling();
+        $this->signIn();
+        $thread = create('Forum\Thread');
+        $reply = make('Forum\Reply', [
+       'body' => 'A standard reply'
+     ]);
+        $this->post($thread->repPostPath(), $reply->toArray())
+          ->assertStatus(200);
+
+        $this->post($thread->repPostPath(), $reply->toArray())
+            ->assertStatus(429);
     }
 }

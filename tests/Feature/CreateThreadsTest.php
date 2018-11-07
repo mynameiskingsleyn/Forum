@@ -57,7 +57,7 @@ class CreateThreadsTest extends TestCase
         $thread = make('Forum\Thread');
 
         $response = $this->from('/threads')->post('/threads', $thread->toArray());
-        dd($response->headers->get('location'));
+        //dd($response->headers->get('location'));
         //Then when we visit the thread page.
         $this->get($response->headers->get('location'))
         // We should see the new thread.

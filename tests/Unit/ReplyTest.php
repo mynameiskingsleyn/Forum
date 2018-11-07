@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Carbon\Carbon;
 
 class ReplyTest extends TestCase
 {
@@ -17,5 +18,27 @@ class ReplyTest extends TestCase
         $reply = factory('Forum\Reply')->create();
 
         $this->assertInstanceOf('Forum\User', $reply->owner);
+    }
+
+    /** @test */
+    public function reply_knows_if_it_was_just_published()
+    {
+        $reply = factory('Forum\Reply')->create();
+
+        $this->assertTrue($reply->wasJustPublished());
+
+        $reply->created_at = Carbon::now()->subMonth();
+
+        $this->assertFalse($reply->wasJustPublished());
+    }
+
+    /** @test */
+    public function reply_can_detect_all_mentioned_users_in_the_body()
+    {
+        $reply = create('Forum\Reply', [
+        'body'=>'@JaneDoe wants to talk to @JohnDoe'
+      ]);
+
+        $this->assertEquals(['JaneDoe','JohnDoe'], $reply->mentionedUsers());
     }
 }

@@ -4,9 +4,14 @@ namespace Forum\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
+use Forum\Exceptions\ThrottleException;
+
+//use \ApiResponser;
 
 class Handler extends ExceptionHandler
 {
+    //use ApiResponser;
     /**
      * A list of the exception types that are not reported.
      *
@@ -48,6 +53,28 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof ValidationException) {
+            if ($request->expectsJson()) {
+                //return $this->convertValidationExceptionToResponse($excetpion, $request);
+                //do json convertion.
+                $errors = $exception->validator->errors()->getMessages();
+                //return response()->json($errors, 422);
+                //     return $this->errorResponse($errors, 422);
+
+
+                return response("Sorry, validation failed", 422);
+            }
+        }
+        if ($exception instanceof ThrottleException) {
+            return response('Sorry you  are posting too frequent', 429);
+        }
+
         return parent::render($request, $exception);
     }
+    // protected function convertValidationExceptionToResponse(ValidationException $e, $request)
+    // {
+    //     $errors = $e->validator->errors()->getMessages();
+    //     //return response()->json($errors, 422);
+    //     return $this->errorResponse($errors, 422);
+    // }
 }

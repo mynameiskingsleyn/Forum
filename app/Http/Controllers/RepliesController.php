@@ -5,7 +5,13 @@ namespace Forum\Http\Controllers;
 use Illuminate\Http\Request;
 use Forum\Thread;
 use Forum\Reply;
+use Forum\User;
+use Gate;
 use Session;
+use Forum\Notifications\YouWhereMentioned;
+use Forum\Http\Requests\CreatePostRequest;
+
+//use Forum\Inspection\Spam;
 
 class RepliesController extends Controller
 {
@@ -16,24 +22,48 @@ class RepliesController extends Controller
     }
     // store
 
-    public function store(Thread $thread)
+    public function store(Thread $thread, CreatePostRequest $form)
     {
-        $this->validate(
-            request(),
-          [
-            'body' =>'required|min:4'
-          ]
-        );
+        //try {
 
-        $reply=$thread->addReply([
+        //$this->authorize('create', new Reply);
+        //different approach using gate....
+        // if (Gate::denies('create', new Reply)) {
+        //     return response(
+        //         'You are posting too frequently, please take a break :)',
+        //           422
+        //       );
+        // }
+        //request()->validate(['body' => 'required|spamfree']);
+        // $this->validate(
+        // request(),
+        //   [
+        //     'body' =>'required|min:4|spamfree'
+        //   ]
+        //   );
+        //return $form->persist($thread);
+        $reply =$thread->addReply([
             'body' => request('body'),
             'user_id' => auth()->id()
-        ]);
+        ])->load('owner');
+        // Inspect the body of the reply for username mentions..
+
+        // And then for each mentioned user, notify them.
+      
+        return $reply->load('owner');
+        // } catch (\Exception $e) {
+        //     return response(
+        //       'sorry your reply could not be saved at this point',
+        //         422
+        //     );
+        // }
+
+
         //Session::flash('success', 'Reply saved');
-        if (request()->expectsJson()) {
-            return $reply->load('owner');
-        }
-        return back()->with('flash', 'Your reply has been saved');
+        // if (request()->expectsJson()) {
+        //     return $reply->load('owner');
+        // }
+        //return back()->with('flash', 'Your reply has been saved');
     }
     public function destroy(Reply $reply)
     {
@@ -51,7 +81,24 @@ class RepliesController extends Controller
     public function update(Reply $reply)
     {
         $this->authorize('update', $reply);
-        $reply->update(['body' => request('body')]);
+        try {
+            //request()->validate(['body' => 'required|spamfree']);
+            $this->validate(
+            request(),
+              [
+                'body' =>'required|min:4|spamfree'
+              ]
+              );
+            //$spam->detect(request('body'));
+            $reply->update(['body' => request('body')]);
+        } catch (\Exception $e) {
+            return response(
+            'sorry your reply could not be updated at this point',
+              422
+          );
+        }
+
+
 
         //$reply->update(request(['body']));
     }

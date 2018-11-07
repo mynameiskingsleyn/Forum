@@ -16,7 +16,8 @@ class EventServiceProvider extends ServiceProvider
         'Forum\Events\Event' => [
             'Forum\Listeners\EventListener',
         ],
-        'Forum\Events\ThreadHasNewReply'=>[
+        'Forum\Events\ThreadRecievedNewReply'=>[
+            'Forum\Listeners\NotifyMentionedUsers',
             'Forum\Listeners\NotifyThreadSubscribers',
         ],
     ];
