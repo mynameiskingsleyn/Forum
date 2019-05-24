@@ -26,10 +26,21 @@ class MentionUserTest extends TestCase
         // And John replies and mentions @King,
         $reply = make(
             'Forum\Reply',
-        ['body'=>'good job @JaneDoe']
+        ['body'=>'good job @JaneDoe from @JohnDoe']
         );
         $response = $this->postJson($thread->repPostPath(), $reply->toArray());
         //Then, JaneDoe should be notified.
         $this->assertCount(1, $jane->notifications);
+    }
+
+    /** @test */
+    public function it_can_fetch_all_mentioned_users_starting_with_the_given_characters()
+    {
+        $user1 = create('Forum\User', ['name'=>'johndoe']);
+        $user3 = create('Forum\User', ['name'=>'johndoe2']);
+        $user2 = create('Forum\User', ['name'=>'janedoe']);
+        $results = $this->json('GET', '/api/users', ['name'=>'john']); // json request-> (Method,uri,data).
+
+        $this->assertCount(2, $results->json());
     }
 }

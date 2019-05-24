@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password','avatar_path'
     ];
     //  protected $with = ['threads'];
 
@@ -27,6 +27,9 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password', 'remember_token','email'
+    ];
+    protected $casts = [
+      'confirmed'=>'boolean'
     ];
     protected static function boot()
     {
@@ -78,5 +81,23 @@ class User extends Authenticatable
     public function lastReply()
     {
         return $this->hasOne(Reply::class)->latest();
+    }
+
+    public function getAvatarPathAttribute($avatar)
+    {
+        //dd($avatar);
+        //return asset($this->avatar_path?: 'images/avatars/default.png');
+        return asset($avatar ?: 'images/avatars/default.png');
+        // if (!$this->avatar_path) {
+        //     return 'avatars/default.jpg';
+        // }
+        // return $this->avatar_path;
+    }
+    public function confirm()
+    {
+        $this->confirmed = true;
+        $this->confirmation_token = null;
+        $this->save();
+        return $this->confirmed;
     }
 }

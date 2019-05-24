@@ -20,6 +20,11 @@ class EventServiceProvider extends ServiceProvider
             'Forum\Listeners\NotifyMentionedUsers',
             'Forum\Listeners\NotifyThreadSubscribers',
         ],
+
+        //Registered::class
+        // 'Illuminate\Auth\Events\Registered' => [
+        //   //'Forum\Listeners\SendEmailConfirmationRequest'
+        // ]
     ];
 
     /**

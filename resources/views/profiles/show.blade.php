@@ -3,10 +3,7 @@
 @section('content')
   <div class="container">
     <div class="page-header">
-      <h1>
-          {{ $profile_user->name }}
-          <small>member since {{ $profile_user->created_at->diffForHumans() }}</small>
-      </h1>
+      <avatar-form :user="{{ $profile_user }}"> </avatar-form>
     </div>
     <h2>Activities</h2>
     @forelse($activities as $date => $activity)

@@ -6,6 +6,9 @@ use Forum\User;
 use Forum\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Request;
+use Forum\Mail\PleaseConfirmEmail;
 
 class RegisterController extends Controller
 {
@@ -62,10 +65,21 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        do {
+            $token = str_random(25);
+        } while (User::where('confirmation_token', $token)->exists());
+        return User::forceCreate([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'confirmation_token'=> $token,
+            // 'confirmation_token'=> str_limit(md5($data['email'].str_random()),25)
         ]);
+    }
+
+    protected function registered(Request $request, $user)
+    {
+        Mail::to($user)->send(new PleaseConfirmEmail($user));
+        return redirect($this->redirectPath());
     }
 }

@@ -5,7 +5,7 @@
       </div>
       <paginator :dataSet="dataSet" @updated="fetch"></paginator>
       <div class="" v-if="signedIn">
-        <new-reply :thread_id="thread.id" @created="add"> </new-reply>
+        <new-reply :thread="thread" @created="add"> </new-reply>
       </div>
   </div>
 

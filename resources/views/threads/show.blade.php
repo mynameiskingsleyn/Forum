@@ -1,5 +1,10 @@
 @extends('layouts.app')
-
+@section('header')
+  <link rel="stylesheet" href="/css/vendor/jquery.atwho.css">
+  <script type="text/javascript">
+     window.thread = <?= json_encode($thread) ?>
+  </script>
+@endsection
 @section('content')
 <thread-view :initial-Replies-Count ="{{ $thread->replies_count }}" inline-template>
     <div class="container">
@@ -14,6 +19,7 @@
                                 {{ session('status') }}
                             </div>
                         @endif
+                        <img src="{{  $thread->owner->avatar_path }}" alt="{{ $thread->owner->name }}" width="40" class="mr-1">
                             <article>
                                 <h4>{{ $thread->title }} <br>By: <a href="/profiles/{{ $thread->owner->name }}">{{ $thread->owner->name }} </a></h4>
                                 @can('update', $thread)
@@ -26,7 +32,7 @@
                                     </form>
 
                                   </div>
-                                  @endcan
+                                @endcan
                                 <div class="body">{{ $thread->body }}</div>
 
                             </article>

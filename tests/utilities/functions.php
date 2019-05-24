@@ -7,6 +7,11 @@ function make($class, $attributes=[], $times=null)
 {
     return factory($class, $times)->make($attributes);
 }
+
+function registerUser($user)
+{
+    return $user->confirmed = true;
+}
 // function create_data($class, $file_name, $table, $id = null)
 // {
 //     $dataloc = dirname(dirname(__DIR__)).'/database/sampledata/'.$file_name;

@@ -177,6 +177,8 @@ return [
         // Forum\Providers\BroadcastServiceProvider::class,
         Forum\Providers\EventServiceProvider::class,
         Forum\Providers\RouteServiceProvider::class,
+        Forum\Providers\AppFakingProvider::class,
+        Artisaninweb\SoapWrapper\ServiceProvider::class,
 
     ],
 
@@ -227,6 +229,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Carbon' => 'Carbon\Carbon',
+        'SoapWrapper' => Artisaninweb\SoapWrapper\Facade\SoapWrapper::class,
 
     ],
 

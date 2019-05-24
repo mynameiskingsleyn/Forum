@@ -32,7 +32,7 @@ class ParticipateInForumTest extends TestCase
         // $thread = factory('Forum\Thread')->create();
         // when the user adds a reply to the thread
         //$reply = factory('Forum\Reply')->create();
-        $this->post('/threads/'.$this->thread->id.'/replies', $this->reply->toArray());
+        $this->post($this->thread->repPostPath(), $this->reply->toArray());
 
         // Then their reply should be visible on the page.
         $this->get($this->thread->path())
@@ -45,7 +45,7 @@ class ParticipateInForumTest extends TestCase
     {
         $this->signIn();
         $reply = make('Forum\Reply', ['body'=>null]);
-        $this->postJson('/threads/'.$this->thread->id.'/replies', $reply->toArray())
+        $this->postJson($this->thread->repPostPath(), $reply->toArray())
           //->assertSessionHasErrors('body');
           ->assertStatus(422);
     }

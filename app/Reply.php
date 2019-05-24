@@ -12,7 +12,7 @@ class Reply extends BaseModel
     protected $guarded = [];
 
     protected $with = ['owner','favorites','activity'];
-    protected $appends = ['FavoritesCount','isFavorited'];
+    protected $appends = ['FavoritesCount','isFavorited','isBest','canMarkBest'];//,'canMarkBest','isBest'];
     //
     use Traits\Favoritable;
     use Traits\RecordsActivity;
@@ -25,6 +25,9 @@ class Reply extends BaseModel
         // });
         static::deleted(function ($reply) {
             $reply->thread->decrement('replies_count');
+            if ($reply->isBest()) {
+                //$reply->thread->update(['best_reply_id'=>null]);
+            }
         });
         static::created(function ($reply) {
             $reply->thread->increment('replies_count');
@@ -58,8 +61,34 @@ class Reply extends BaseModel
 
     public function mentionedUsers()
     {
-        preg_match_all('/\@([^\s\.]+)/', $this->body, $matches);
+        preg_match_all('/@([\w\-]+)/', $this->body, $matches);
         $names = $matches[1];
         return $names;
+    }
+
+    public function setBodyAttribute($body)
+    {
+        $this->attributes['body'] = preg_replace('/@([\w\-]+)/', '<a href="/profiles/$1">$0</a>', $body);
+    }
+
+    public function isBest()
+    {
+        //return false;
+        return $this->id == $this->thread->best_reply_id;
+    }
+
+    public function getIsBestAttribute()
+    {
+        return $this->isBest();
+    }
+
+    public function canMarkBest()
+    {
+        return $this->thread->owner->id == auth()->id();
+    }
+
+    public function getCanMarkBestAttribute()
+    {
+        return $this->canMarkBest();
     }
 }

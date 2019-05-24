@@ -48,9 +48,11 @@ class RepliesController extends Controller
         ])->load('owner');
         // Inspect the body of the reply for username mentions..
 
+        return response($reply, 200);
         // And then for each mentioned user, notify them.
-      
-        return $reply->load('owner');
+        //return $reply;
+
+        //return $reply->load('owner');
         // } catch (\Exception $e) {
         //     return response(
         //       'sorry your reply could not be saved at this point',
@@ -81,27 +83,30 @@ class RepliesController extends Controller
     public function update(Reply $reply)
     {
         $this->authorize('update', $reply);
-        try {
-            //request()->validate(['body' => 'required|spamfree']);
-            $this->validate(
+
+        //request()->validate(['body' => 'required|spamfree']);
+        $this->validate(
             request(),
               [
-                'body' =>'required|min:4|spamfree'
+                'body' =>'required|min:10|spamfree'
               ]
               );
-            //$spam->detect(request('body'));
-            $reply->update(['body' => request('body')]);
-        } catch (\Exception $e) {
-            return response(
-            'sorry your reply could not be updated at this point',
-              422
-          );
+        //$spam->detect(request('body'));
+        $reply->update(['body'=>request('body')]);
+        if (request()->expectsJson()) {
+            //dd('end of all');
+            //return response(['status'=>'Reply Updated']);
+        } else {
+            //return redirect()->back()->with('flash', 'Your reply has been updated!!');
         }
 
-
-
-        //$reply->update(request(['body']));
+        //return $reply->fresh()->load('owner');
     }
+
+
+
+    //$reply->update(request(['body']));
+
     public function index($channelId, Thread $thread)
     {
         return $thread->replies()->latest()->paginate(4);

@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Auth;
 use Session;
+use Illuminate\Support\Facades\Redis;
+use Forum\Classes\Trending;
+use Log;
 
 // use Forum\Inspection\Spam;
 
@@ -22,6 +25,7 @@ class ThreadsController extends Controller
     public function __construct()
     {
         $this->middleware('auth')->except(['index', 'show']);
+        $this->middleware('must-be-confirmed')->only('store');
     }
     /**
      * Display a listing of the resource.
@@ -30,16 +34,22 @@ class ThreadsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Channel $channel, ThreadFilters $filters)
+    public function index(Channel $channel, ThreadFilters $filters, Trending $trendings)
     {
         $threads = $this->getThreads($channel, $filters);
         if (request()->wantsJSon()) {
             //dd($threads);
             return $threads;
         }
-        //Session::flash('flash', 'this is threads home page');
-        //dd($threads->toSql());
-        return view('threads.index')->withThreads($threads)->withChannel($channel? :null);
+
+        // $trending = collect(Redis::zrevrange('trending_threads', 0, 2))->map(function ($thread) {
+        //     return json_decode($thread);
+        // });
+
+        $trending=$trendings->get('threads');//= array_map('json_decode', Redis::zrevrange('trending_threads', 0, 4));
+
+        // return view('threads.index')->withThreads($threads)->withChannel($channel? :null);
+        return view('threads.index', compact('threads', 'channel', 'trending'));
     }
 
     /**
@@ -62,25 +72,41 @@ class ThreadsController extends Controller
     public function store(Request $request)
     {
         //
-        $this->id = Auth::id();
-
-        $this->validate($request, [
+        //$this->middleware('must-be-confirmed');
+        $userid = Auth::id();
+        $rules = [
            'title' => 'required|max:225|min:5|spamfree',
            'body' =>'required|min:10|spamfree',
            'channel_id' => 'required|exists:channels,id'
-       ]);
+       ];
+        $custum_messages = [
+          'required'=>'the :attribute field is required',
+          'spamfree'=>'The :attribute field has spams please fix'
+        ];
+
+
+        //dd('shit balls');
+        $this->validate($request, $rules, $custum_messages);
         //dd($request->all());
         // dd($request->title);
         // $spam->detect(request('title'));
         // $spam->detect(request('body'));
+        // if (count($errors) > 0) {
+        //     foreach ($errors as $error) {
+        //         session()->put('flash', "$error");
+        //     }
+        // }
         $thread = Thread::create([
-            'user_id' => $this->id,
+            'user_id' => $userid,
             'channel_id'=> $request->channel_id,
             'title'=> $request->title,
-            'body'=> $request->body
+            'body'=> $request->body,
+            //'slug'=> $request->title
         ]);
-        //dd("No problem ".$thread->user_id);
-        // Session::flash('success', 'Thread created succesfully');
+        if ($request->wantsJSon()) {
+            return response($thread, 201);
+        }
+
         return redirect($thread->path())->with('flash', 'Your thread has been published!!');
         //return redirect()->route('threads.show',$thread->id); */
     }
@@ -91,7 +117,7 @@ class ThreadsController extends Controller
      * @param  \Forum\Thread  $thread
      * @return \Illuminate\Http\Response
      */
-    public function show($channel_slug, Thread $thread)
+    public function show($channel_slug, Thread $thread, Trending $trendings)
     {
         //record that user visited this page...
 
@@ -109,8 +135,21 @@ class ThreadsController extends Controller
         if (!$ch) {
             return redirect('404');
         }
+        //dd('we are geting here yall!!');
         //thread->load('replies'); this will load the replies as well.
         //$thread->withCount('replies');
+        // Redis::zincrby('trending_threads', 1, json_encode([
+        //   'title' => $thread->title,
+        //   'path' => $thread->path()
+        // ]));
+        $item = [
+          'title' => $thread->title,
+          'path' => $thread->path()
+        ];
+        //add thread count for perpose of showing most popular
+        $trendings->add('threads', $item);
+        // increase the number of visits for this thread
+        $thread->recordVisit();
 
         //dd($thread);
         // $replies = $thread->replies()->latest();
@@ -190,5 +229,20 @@ class ThreadsController extends Controller
         $threads = $threads->with('channel')->filter($filters)->paginate(5);
         //  dd($threads->toSql());
         return $threads;
+    }
+    public function reserved_functions_code()
+    {
+        $thrds = Thread::all();
+        //Log::debug($thrds);
+        foreach ($thrds as $thrd) {
+            Log::info($thrd->title.':'.$thrd->slug);
+            if (!$thrd->slug) {
+                Log::info('thread-> '.$thrd->title.' has no slug');
+                $thrd->setSlugAttribute($thrd->title);
+                Log::info('---new value----------');
+                Log::info('thread-> '.$thrd->title.' new slug is '.$thrd->slug);
+                $thrd->save();
+            }
+        }
     }
 }

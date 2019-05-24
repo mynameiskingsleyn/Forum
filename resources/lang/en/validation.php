@@ -103,6 +103,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'body' => [
+            'spamfree' => 'The Body has spam please correct spam thans',
+        ],
     ],
 
     /*

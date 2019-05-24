@@ -15,6 +15,11 @@
     },
     methods:{
 
+    },
+    watch:{
+      repliesCount(){
+        console.log('replies counter has changed'.this.repliesCounts);
+      }
     }
 
   }

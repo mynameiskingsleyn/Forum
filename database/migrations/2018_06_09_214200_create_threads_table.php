@@ -21,7 +21,16 @@ class CreateThreadsTable extends Migration
             ;
             $table->string('title');
             $table->text('body');
+            $default = substr(md5(uniqid(mt_rand(), true)), 0, 8);
+            $table->string('slug')->default($default)->unique();
+            $table->unsignedInteger('best_reply_id')->nullable();
+            $table->unsignedInteger('visits')->default(0);
             $table->timestamps();
+
+            $table->foreign('best_reply_id')
+                  ->references('id')
+                  ->on('replies')
+                  ->onDelete('set null');
         });
     }
 

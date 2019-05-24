@@ -16,7 +16,7 @@ class ProfilesTest extends TestCase
     public function a_user_has_profile()
     {
         $user = create('Forum\User');
-
+        //dd($user->name);
         $this->get("/profiles/$user->name")
           ->assertSee($user->name);
     }

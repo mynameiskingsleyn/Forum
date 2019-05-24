@@ -19,7 +19,7 @@ class ReadThreadsTest extends TestCase
     public function a_thread_can_make_a_string_path()
     {
         //$thread = make('Forum\Thread');
-        $this->assertEquals('/threads/'.$this->thread->channel->slug.'/'.$this->thread->id, $this->thread->path());
+        $this->assertEquals('/threads/'.$this->thread->channel->slug.'/'.$this->thread->slug, $this->thread->path());
     }
 
     /** @test */
@@ -126,5 +126,18 @@ class ReadThreadsTest extends TestCase
         //dd($response);
         $this->assertCount(2, $response['data']);
         $this->assertEquals(2, $response['total']);
+    }
+    /** @test **/
+    public function we_record_a_new_visit_each_time_the_thread_is_read()
+    {
+        $thread = create('Forum\Thread');
+        //$thread->resetVisits();
+        // dd($thread->fresh()->toArray());
+        //dd($thread->toArray());
+        $this->assertEquals(0, $thread->fresh()->visits);
+
+        $this->call('GET', $thread->path());
+
+        $this->assertEquals(1, $thread->fresh()->visits);
     }
 }

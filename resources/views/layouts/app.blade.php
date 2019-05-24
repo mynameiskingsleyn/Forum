@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
     <!-- scripts -->
     <script>
       window.App = {!! json_encode([
@@ -26,15 +27,19 @@
       body{ padding-bottom:100px; }
       .level{ display: flex; align-items:center;}
       .flex{flex:1;}
+      .mr-1{margin-right:1em;}
+      .ml-a{margin-left:auto;}
       [v-cloak]{ display:none;}
     </style>
+    @yield('header')
+
 </head>
 <body>
     <div id="app">
       @include('layouts.nav')
 
       @yield('content')
-      <flash message="{{ session('flash') }}"></flash>
+      
 
 
       @include('_includes._messages')
@@ -43,5 +48,6 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
     <!-- <script src={{ mix('/js/app.js') }}></script> -->
+    @yield('scripts')
 </body>
 </html>

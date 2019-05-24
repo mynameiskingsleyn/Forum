@@ -29,23 +29,9 @@ class NotifyMentionedUsers
     public function handle(ThreadRecievedNewReply $event)
     {
         //
-
-        collect($event->reply->mentionedUsers())
-          ->map(function ($name) {
-              return User::where('name', $name)->first();
-          })
-          ->filter()
-          ->each(function ($user) use ($event) {
-              $user->notify(new YouWhereMentioned($event->reply));
-          });
-
-        //$event->reply->thread->notifySubscribers($event->reply);
-        //$mentionedUsers = $event->reply->mentionedUsers();
-        // foreach ($mentionedUsers as $name) {
-        //     $user = User::whereName($name)->first();
-        //     if ($user) {
-        //         $user->notify(new YouWhereMentioned($event->reply));
-        //     }
-        // }
+        User::WhereIn('name', $event->reply->mentionedUsers())->get()
+        ->each(function ($user) use ($event) {
+            $user->notify(new YouWhereMentioned($event->reply));
+        });
     }
 }

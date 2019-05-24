@@ -58,11 +58,19 @@ class Handler extends ExceptionHandler
                 //return $this->convertValidationExceptionToResponse($excetpion, $request);
                 //do json convertion.
                 $errors = $exception->validator->errors()->getMessages();
-                //return response()->json($errors, 422);
-                //     return $this->errorResponse($errors, 422);
 
-
-                return response("Sorry, validation failed", 422);
+                return response()->json($errors, 422);
+                //return $this->errorResponse($errors, 422);
+                //$errors = collect($exception->getMessages());
+                // $errors = $exception->validator->errors()->all();
+                // $message ='';
+                // foreach($errors as $error){
+                //   $message .=$error.','
+                // }
+                //dd($errors);
+                //return response($message, 422);
+                //return response("Sorry, validation failed", 422);
+                //ddreturn response("Sorry, validation failed ".$errors, 422);
             }
         }
         if ($exception instanceof ThrottleException) {

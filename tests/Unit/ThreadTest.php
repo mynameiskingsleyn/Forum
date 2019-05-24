@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Redis;
 
 class ThreadTest extends TestCase
 {
@@ -33,6 +34,14 @@ class ThreadTest extends TestCase
     {
         $this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $this->thread->replies);
     }
+
+    /** @test */
+    public function a_thread_has_a_path()
+    {
+        $thread = create('Forum\Thread');
+        $this->assertEquals("/threads/{$thread->channel->slug}/{$thread->slug}", $thread->path());
+    }
+
     /** @test */
     public function a_thread_can_add_a_reply()
     {
@@ -111,4 +120,22 @@ class ThreadTest extends TestCase
         cache()->forever($key, \Carbon\Carbon::now());
         $this->assertFalse($thread->hasUpdatesFor(auth()->user()));
     }
+    /** @test */
+    // public function a_thread_records_each_visit()
+    // {
+    //     //Redis::del("threads.{$this->thread->id}.visits");
+    //     $this->thread->resetVisits();
+    //     $this->signIn();
+    //     //  $thread = create('Forum\Thread', ['id'=>20]);
+    //     //dd($this->thread->visits());
+    //     $this->assertSame(0, $this->thread->visits());
+    //
+    //     $this->thread->recordVisit(); // incr 100 to 101
+    //
+    //     $this->assertEquals(1, $this->thread->visits());
+    //
+    //     $this->thread->recordVisit();
+    //
+    //     $this->assertEquals(2, $this->thread->visits());
+    // }
 }

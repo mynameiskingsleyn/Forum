@@ -4,7 +4,7 @@
   <select name="channel_id" class="form-control" required>
     <option value="">Choose One..</option>
     @foreach($channels as $channel)
-      <option value="{{$channel->id}}" {{ old('channel_id') == $channel->id ? 'selected': ''}}>{{$channel->name}}</option>
+      <option value="{{$channel->id}}" {{ old('channel_id') == $channel->id ? 'selected=selected': ''}}>{{$channel->name}}</option>
     @endforeach
   </select>
 </div>

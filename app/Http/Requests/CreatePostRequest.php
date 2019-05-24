@@ -26,20 +26,39 @@ class CreatePostRequest extends FormRequest
     public function rules()
     {
         return [
-            'body'=>'required|spamfree'
+            'body'=>'required|spamfree|min:10'
         ];
     }
 
-    public function persist($thread)
+    /**
+     * Get the validation messages that apply to the request.
+     *
+     * @return array
+     */
+    public function messages()
     {
-        return $thread->addReply([
-            'body' => request('body'),
-            'user_id' => auth()->id()
-        ])->load('owner');
+        return[
+          'body.reqired'=>'Body is required',
+          'body.spamfree'=>' your input has spam please fix!!',
+          'body.min:10'=>'You must have more than 9 characters on the body'
+      ];
     }
+
+    // public function persist($thread)
+    // {
+    //     return $thread->addReply([
+    //         'body' => request('body'),
+    //         'user_id' => auth()->id()
+    //     ])->load('owner');
+    // }
 
     protected function failedAuthorization()
     {
-        throw new ThrottleException('You are replying too frequently');
+        throw new ThrottleException();
     }
+
+    // protected function failedValidation()
+    // {
+    //     throw new SpamException();
+    // }
 }

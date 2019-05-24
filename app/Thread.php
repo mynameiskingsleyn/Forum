@@ -5,6 +5,8 @@ namespace Forum;
 //use Illuminate\Database\Eloquent\Model;
 use Forum\BaseModel;
 use Forum\Notifications\ThreadWasUpdated;
+use Forum\Classes\Trending;
+use Log;
 //use Forum\Events\ThreadHasNewReply;
 use Forum\Events\ThreadRecievedNewReply;
 
@@ -14,7 +16,7 @@ class Thread extends BaseModel
     protected $with = ['owner'];
     protected $appends = ['isSubscribedTo'];
 
-    use Traits\RecordsActivity;
+    use Traits\RecordsActivity,Traits\RecordsVisits;
     protected static function boot()
     {
         parent::boot();
@@ -33,17 +35,28 @@ class Thread extends BaseModel
         //     // $thread->replies->activity()->each->delete();
         //     //$thread->recordActivity('deleted');
         // });
+        static::created(function ($thread) {
+            $thread->update(['slug'=>$thread->title]);
+        });
     }
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
     public function path()
     {
         //return "/threads/{$this->channel->slug}/{$this->id}";
         //('/threads/'.$this->channel->slug.'/'.$this->id);
-        return '/threads/'.$this->channel->slug .'/'.$this->id;
+        return '/threads/'.$this->channel->slug .'/'.$this->slug;
+    }
+    public function deletePath()
+    {
+        return '/threads/'.$this->slug;
     }
     public function repPostPath()
     {
-        return '/threads/'.$this->id.'/replies';
+        return '/threads/'.$this->slug.'/replies';
     }
     public function replies()
     {
@@ -74,7 +87,7 @@ class Thread extends BaseModel
 
 
         event(new ThreadRecievedNewReply($reply));
-        
+
         //  $this->notifySubscribers($reply);
 
 
@@ -140,5 +153,54 @@ class Thread extends BaseModel
         $key = $user->visitedThreadCacheKey($this);
         //  $key = sprintf("user.%s.visits.%s", auth()->id(), $this->id);
         return $this->updated_at > cache($key);
+    }
+
+    public function setSlugAttribute($value)
+    {
+        //dd($value);
+
+        if (static::whereSlug($slug= str_slug($value))->exists()) {
+            // check if title ends with number and append -1
+            // if (is_numeric($slug[-1])) {
+            //     $slug = $slug.'-1';
+            //     //dd($value);
+            //     if (static::whereSlug($slug)->exists()) {
+            //
+            //     }
+            // }
+            $slug = $this->incrementSlug($slug);
+        }
+
+
+        $this->attributes['slug']=$slug;
+        //var_dump("{$value}:--> {$slug}");
+    }
+
+    public function incrementSlug($slug, $count=1)
+    {
+        //dd($slug);
+        //Log::info('initial-slug is '.$slug);
+        // $max = static::whereTitle($this->title)->latest('id')->value('slug');
+        // if (is_numeric($max[-1])) {
+        //     return preg_replace_callback('/(\d+)$/', function ($matches) use ($slug) {
+        //         $new = $matches[1]+1;
+        //         return $new;
+        //     }, $max);
+        // } else {
+        //     $slug = $slug.'-1';
+        // }
+        $original = $slug;
+        while (static::whereSlug($slug)->exists()) {
+            $slug = "{$original}-".$count++;
+        }
+        //Log::info($slug);
+        return $slug;
+    }
+
+    public function markBestReply(Reply $reply)
+    {
+        // $this->best_reply_id = $reply->id;
+        // $this->save();
+        $this->update(['best_reply_id'=>$reply->id]);
     }
 }
