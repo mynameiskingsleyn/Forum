@@ -14,7 +14,7 @@ class Thread extends BaseModel
 {
     protected $guarded = [];
     protected $with = ['owner'];
-    protected $appends = ['isSubscribedTo'];
+    protected $appends = ['isSubscribedTo','Rank'];
 
     use Traits\RecordsActivity,Traits\RecordsVisits;
     protected static function boot()
@@ -131,6 +131,18 @@ class Thread extends BaseModel
         return $this->subscriptions()
           ->where('user_id', auth()->id())
           ->exists();
+    }
+
+    public function getRankAttribute()
+    {
+        $trending = new Trending();
+        $item = [
+            'title' => $this->title,
+            'path' => $this->path()
+        ];
+
+        $rank = $trending->rank('threads',$item);
+        return $rank;
     }
 
     public function subscriptions()

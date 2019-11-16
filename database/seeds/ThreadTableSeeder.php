@@ -18,7 +18,7 @@ class ThreadTableSeeder extends Seeder
         $channels = new Forum\Channel;
         //  dd($users);
         $users->each(function ($user) {
-            $channels_id = array(1,2,3);
+            $channels_id = array(1,2,3,4);
             $ch_id = array_rand($channels_id, 1);
             factory('Forum\Thread')->create(['user_id'=>$user->id, 'channel_id'=>$channels_id[$ch_id]]);
         });

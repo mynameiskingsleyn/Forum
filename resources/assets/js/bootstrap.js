@@ -1,3 +1,9 @@
+import Echo from "laravel-echo";
+
+window.Echo = new Echo({
+    broadcaster:'pusher',
+    key: ''
+})
 
 window._ = require('lodash');
 window.Vue = require('vue');

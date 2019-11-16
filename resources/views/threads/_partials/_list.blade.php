@@ -25,7 +25,7 @@
           <a href="{{ $thread->path() }}" class="btn btn-primary">View Thread</a>
         </div>
         <div class="panel-footer">
-          Has {{ $thread->visits }} visits
+          Has {{ $thread->visits }} visits and {{ $thread->rank }}
         </div>
       </div>
 

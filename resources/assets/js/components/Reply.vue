@@ -91,7 +91,7 @@
             body:this.body
           })
           .catch(error =>{
-            console.log(error);
+            console.log(error.response.data);
              flash(error.response.data,'danger');
              console.log('there was an error on post');
           }).then(({data})=>{

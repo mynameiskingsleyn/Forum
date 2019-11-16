@@ -20,6 +20,17 @@ class Trending
       ));
     }
 
+    public function rank($name, $array)
+    {
+        $rank = Redis::zrevrank($this->cacheKey($name),json_encode($array));
+        //dd($rank);
+        if($rank !== null){
+            $rank = $rank +1;
+            return "ranked number $rank of all $name";
+        }
+        return "has not been ranked yet ";
+
+    }
     protected function cacheKey($name)
     {
         //'cat';

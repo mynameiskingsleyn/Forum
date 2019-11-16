@@ -146,6 +146,8 @@ class ThreadsController extends Controller
           'title' => $thread->title,
           'path' => $thread->path()
         ];
+        // get thread rank..
+        $rank = $trendings->rank('threads', $item);
         //add thread count for perpose of showing most popular
         $trendings->add('threads', $item);
         // increase the number of visits for this thread
@@ -160,7 +162,7 @@ class ThreadsController extends Controller
             return $thread->append(['replies','channel']);
         }
         //return $thread;
-        return view('threads.show', compact('thread', 'ch', 'replies')); /// will use the next due to vue..
+        return view('threads.show', compact('thread', 'ch', 'replies','rank')); /// will use the next due to vue..
         //return view('threads.show', compact('thread', 'ch'));
         // dd("great job yall!!");
     }
