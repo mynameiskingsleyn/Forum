@@ -47,7 +47,7 @@ class ThreadsController extends Controller
         // });
 
         $trending=$trendings->get('threads');//= array_map('json_decode', Redis::zrevrange('trending_threads', 0, 4));
-
+        //dd($trending);
         // return view('threads.index')->withThreads($threads)->withChannel($channel? :null);
         return view('threads.index', compact('threads', 'channel', 'trending'));
     }
